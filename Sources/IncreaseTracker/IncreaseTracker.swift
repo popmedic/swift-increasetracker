@@ -50,7 +50,7 @@ public protocol IncreaseTrackable {
     func update(_ value: Update) throws -> Track
 }
 
-/*
+/**
  Tracks increases to a value based on the offset. Set the offset to start with,
  will default to 0. Call update periodiacally to set the new value based of the
  change from the last offset.
@@ -108,17 +108,16 @@ public class IncreaseTracker<
      Errors thrown
      */
     public enum Error: Swift.Error {
-        case
         /**
          thrown when initializing and the Track type is smaller or equal
          to the Update type
          */
-        trackTypeMaxLessThenUpdateMax,
+        case trackTypeMaxLessThenUpdateMax
         /**
          thrown when update increase grows the increased value greater then
          Track type
          */
-        totalOutOfBounds
+        case totalOutOfBounds
     }
     
     /**
@@ -190,7 +189,7 @@ public class IncreaseTracker<
     }
     
     private func isResultInBounds(_ value: Update) -> Bool {
-        return Double(_increased)/2.0 + Double(value)/2.0 <= Double(Track.max)/2.0
+        Double(_increased)/2.0 + Double(value)/2.0 <= Double(Track.max)/2.0
     }
     
     private let updateAccessQueue: DispatchQueue

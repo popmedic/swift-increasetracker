@@ -17,5 +17,5 @@ fi;
 
 xcrun llvm-cov report \
   -instr-profile=.build/debug/codecov/default.profdata \
-  .build/x86_64-apple-macosx/debug/IncreaseTracker.build/IncreaseTracker.swift.o \
+  .build/x86_64-apple-macosx/debug/IncreaseTracker.build/*.o \
   Sources
