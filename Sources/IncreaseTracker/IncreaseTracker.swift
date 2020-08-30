@@ -1,21 +1,26 @@
 import Foundation
 
 /**
- Tracks increases to a value based on the offset. Set the offset to start with, will default to 0. Call update
- periodiacally to set the new value based of the change from the last offset.
+ Tracks increases to a value based on the offset. Set the offset to start with,
+ will default to 0. Call update periodiacally to set the new value based of the
+ change from the last offset.
  
- Uses an Increase type for storing the increases, and a Offset type for the value that will update.  This allows
- the tracker to update with a smaller value, but store the value in a larger  value, handling when the
- increased value rolles over in the source.
+ Uses an Increase type for storing the increases, and a Offset type for the
+ value that will update.  This allows the tracker to update with a smaller
+ value, but store the value in a larger  value, handling when the increased
+ value rolles over in the source.
  
- **Use Case** - Situations where you want to track changes to a value that is stored in a small int type, and
- worry it will "roll over" and loose track of the increase.
+ **Use Case** - Situations where you want to track changes to a value that is
+ stored in a small int type, and worry it will "roll over" and loose track of
+ the increase.
  */
 public protocol IncreaseTrackable {
     /// Type to store the increased value
     associatedtype Track
-    /// Type that is used to updating.  this will be smaller then the Track type, allowing increased to continue
-    /// tracking when the source rolls over
+    /**
+     Type that is used to updating.  this will be smaller then the Track type,
+     allowing increased to continue tracking when the source rolls over
+     */
     associatedtype Update
     /**
      Required initializer.
@@ -31,11 +36,12 @@ public protocol IncreaseTrackable {
     /**
      Updates the increased value
      
-     If the value passed in is less then the current offset this indicates that the source has rolled around,
-     will currectly adjust and update the increased variable correctly.
+     If the value passed in is less then the current offset this indicates that
+     the source has rolled around, will currectly adjust and update the
+     increased variable correctly.
      
-     **NOTE: ** this DOES run the possiblity of rolling over multiple times.  To improve accuracy update
-     from the source often
+     **NOTE: ** this DOES run the possiblity of rolling over multiple times.
+     To improve accuracy update from the source often
      
      - parameters:
         - value: the new value from the source to calculate the increase from.
@@ -44,29 +50,34 @@ public protocol IncreaseTrackable {
     func update(_ value: Update) throws -> Track
 }
 
-/**
- Tracks increases to a value based on the offset. Set the offset to start with, will default to 0. Call update
- periodiacally to set the new value based of the change from the last offset.
+/*
+ Tracks increases to a value based on the offset. Set the offset to start with,
+ will default to 0. Call update periodiacally to set the new value based of the
+ change from the last offset.
  
- Uses an Increase type for storing the increases, and a Offset type for the value that will update.  This allows
- the tracker to update with a smaller value, but store the value in a larger  value, handling when the
- increased value rolles over in the source.
+ Uses an Increase type for storing the increases, and a Offset type for the
+ value that will update.  This allows the tracker to update with a smaller
+ value, but store the value in a larger  value, handling when the increased
+ value rolles over in the source.
  
- **Use Case** - Situations where you want to track changes to a value that is stored in a small int type, and
- worry it will "roll over" and loose track of the increase.
+ **Use Case** - Situations where you want to track changes to a value that is
+ stored in a small int type, and worry it will "roll over" and loose track of
+ the increase.
  
- - note: Will not work to track UInt or UInt64 because those will never meet the use case, as they are the
- largest UInt value types.
+ - note: Will not work to track UInt or UInt64 because those will never meet the
+ use case, as they are the largest UInt value types.
  
  **Example**
  
- Lets say we have a source that is a UInt8, but this value will roll over when it reaches 255, and we have no
- way to start this value at 0 so we need to start with the sources current offset to track the increases.
+ Lets say we have a source that is a UInt8, but this value will roll over when
+ it reaches 255, and we have no way to start this value at 0 so we need to start
+ with the sources current offset to track the increases.
  
- We want to track it and we want to make sure that when the value gets greater then 255 we continue tracking.
+ We want to track it and we want to make sure that when the value gets greater
+ then 255 we continue tracking.
  
- We can use a UInt64 for the `Track` type, and of course the `Update` will be based on the souce and in
- this example is a UInt8.
+ We can use a UInt64 for the `Track` type, and of course the `Update` will be
+ based on the souce and in this example is a UInt8.
  
 ```
 // protocol for the source
@@ -98,9 +109,15 @@ public class IncreaseTracker<
      */
     public enum Error: Swift.Error {
         case
-        /// thrown when initializing and the Track type is smaller or equal to the Update type
+        /**
+         thrown when initializing and the Track type is smaller or equal
+         to the Update type
+         */
         trackTypeMaxLessThenUpdateMax,
-        /// thrown when update increase grows the increased value greater then Track type
+        /**
+         thrown when update increase grows the increased value greater then
+         Track type
+         */
         totalOutOfBounds
     }
     
@@ -108,7 +125,8 @@ public class IncreaseTracker<
      - parameters:
         - offset: starting value for the offset
      - returns: a new IncreaseTracker
-     - throws: Error.trackTypeMaxLessThenUpdateMax if Tracker type is smaller then Update type
+     - throws: Error.trackTypeMaxLessThenUpdateMax if Tracker type is smaller
+     then Update type
      */
     required public init(_ offset: Update = 0) throws {
         // make sure that the total type is smaller then the input type
@@ -131,11 +149,12 @@ public class IncreaseTracker<
     /**
     Updates the increased value
     
-    If the value passed in is less then the current offset this indicates that the source has rolled around,
-    will currectly adjust and update the increased variable correctly.
+    If the value passed in is less then the current offset this indicates that
+    the source has rolled around, will currectly adjust and update the increased
+    variable correctly.
     
-    - note: this DOES run the possiblity of rolling over multiple times without being caught.
-     To improve accuracy update from the source often
+    - note: this DOES run the possiblity of rolling over multiple times without
+     being caught. To improve accuracy update from the source often
     
     - parameters:
        - value: the new value from the source to calculate the increase from.
