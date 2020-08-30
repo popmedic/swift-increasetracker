@@ -1,0 +1,21 @@
+#!/usr/bin/env sh
+
+error() { 
+  echo "\033[1;31m${@}\033[0m" 
+}
+info() { 
+  echo "\033[93m${@}\033[0m" 
+}
+
+swift test --enable-code-coverage
+if test $? != 0; then
+    error test failed
+    exit 1
+else 
+    info coverage report
+fi;
+
+xcrun llvm-cov report \
+  -instr-profile=.build/debug/codecov/default.profdata \
+  .build/x86_64-apple-macosx/debug/IncreaseTracker.build/IncreaseTracker.swift.o \
+  Sources
