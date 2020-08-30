@@ -24,6 +24,22 @@ final class IncreaseTrackerTests: XCTestCase {
         inc(by: 85)
     }
     
+    func testIncByRandoms() {
+        do {
+            let exp1 = UInt32.random(in: 0..<UInt32.max)
+            let tracker = try IncreaseTracker<UInt, UInt32>(exp1)
+            XCTAssertEqual(exp1, tracker.offset)
+            var upd = UInt32.random(in: exp1..<UInt32.max)
+            let exp2 = upd - tracker.offset
+            XCTAssertEqual(try tracker.update(upd), UInt(exp2))
+            upd = UInt32.random(in: 0..<tracker.offset)
+            let exp3 = (UInt(UInt32.max) - UInt(exp1)) + UInt(upd)
+            XCTAssertEqual(try tracker.update(upd), UInt(exp3))
+        } catch {
+            XCTFail()
+        }
+    }
+    
     private func inc(by: UInt8) {
         do {
             let rollingValue = try IncreaseTracker<UInt16, UInt8>()
