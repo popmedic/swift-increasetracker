@@ -1,4 +1,4 @@
-# swift-rollingvalue
+# swift-increasetracker
 
  Tracks increases to a value based on the offset. Set the offset to start with, will default to 0. Call update
  periodiacally to set the new value based of the change from the last offset.
